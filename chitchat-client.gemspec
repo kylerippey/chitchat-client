@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "chitchat-client"
   gem.require_paths = ["lib"]
   gem.version       = Chitchat::Client::VERSION
+
+  gem.add_dependency 'faraday'
 end
