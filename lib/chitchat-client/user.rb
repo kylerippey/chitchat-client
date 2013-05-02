@@ -1,30 +1,40 @@
 module Chitchat
   module Client
+    class User
+      attr_accessor :identifier
 
-    # PUT /users/:id/sign_on
-    def sign_on(id)
-      response = self.connection.put("/users/#{id}/sign_on")
-      response.status == 200
-    end
+      class << self
+        def find(id)
+          response = Chitchat::Client.connection.get("/users/#{id}.json")
+          return nil unless response.status == 200 && response.headers['content-type'] == "application/json"
+          identifier = id
+          self
+        end
+      end
 
-    # PUT /users/:id/sign_off
-    def sign_off(id)
-      response = self.connection.put("/users/#{id}/sign_off")
-      response.status == 200
-    end
+      def initialize(id)
+        identifier = id
+        sign_on
+        self
+      end
 
-    # GET /users/:id
-    def available?(id)
-      response = connection.get("/users/#{id}")
-      return false unless response.status == 200 && response.headers['content-type'] == "application/json"
+      def sign_on
+        Chitchat::Client.connection.put("/users/#{identifier}/sign_on.json")
+      end
 
-      user = response.body[:user]
-      user ? user[:status] == "available" : false
-    end
+      def sign_off
+        Chitchat::Client.connection.put("/users/#{identifier}/sign_off.json")
+      end
 
-    # GET /users/:id/chats?status=pending
-    def pending_chats(id)
-      connection.get("/users/#{id}/chats", {:status => 'pending'})
+      def status
+        response = connection.get("/users/#{identifier}.json")
+        response.body[:user][:status]
+      end
+
+      def available?
+        status == "available"
+      end
+
     end
   end
 end
