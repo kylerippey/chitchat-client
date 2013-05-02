@@ -8,7 +8,6 @@ module Chitchat
           response = Chitchat::Client.connection.get("/users/#{id}.json")
           return nil unless response.status == 200 && response.headers['content-type'] == "application/json"
           identifier = id
-          self
         end
       end
 
