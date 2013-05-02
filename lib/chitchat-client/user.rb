@@ -1,3 +1,5 @@
+require 'json'
+
 module Chitchat
   module Client
     class User
@@ -5,9 +7,13 @@ module Chitchat
 
       class << self
         def find(id)
-          response = Chitchat::Client.connection.get("/users/#{id}.json")
-          return nil unless response.status == 200 && response.headers['content-type'] == "application/json"
+          response = connection.get("/users/#{id}.json")
+          return nil unless response.status == 200 && response.headers['content-type'] =~ /application\/json/
           Chitchat::Client::User.new(id)
+        end
+        
+        def connection
+          Chitchat::Client.connection
         end
       end
 
@@ -17,20 +23,26 @@ module Chitchat
       end
 
       def sign_on
-        Chitchat::Client.connection.put("/users/#{identifier}/sign_on.json")
+        connection.put("/users/#{identifier}/sign_on.json")
+        true
       end
 
       def sign_off
-        Chitchat::Client.connection.put("/users/#{identifier}/sign_off.json")
-      end
-
-      def status
-        response = connection.get("/users/#{identifier}.json")
-        response.body[:user][:status]
+        connection.put("/users/#{identifier}/sign_off.json")
+        true
       end
 
       def available?
-        status == "available"
+        response = connection.get("/users/#{identifier}.json")
+        
+        data = JSON.parse(response.body)
+        data['user']['available']
+      end
+      
+      protected
+      
+      def connection
+        self.class.connection
       end
 
     end
