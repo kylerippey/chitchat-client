@@ -42,15 +42,20 @@ module Chitchat
 
       # PUT /chats/:id/answer
       def answer
+        response = Chitchat::Client.connection.put("/chats/#{chat_id}/answer.json")
+        response.status == 200
       end
 
       # PUT /chats/:id/hang_up
       def hang_up
+        response = Chitchat::Client.connection.put("/chats/#{chat_id}/hang_up.json")
+        response.status == 200
       end
 
       # POST /calls/:id/messages?from=[user_id]&body=[text]
       def send_message(from_id, body)
         response = Chitchat::Client.connection.post("/calls/#{chat_id}", {:from => from_id, :body => body})
+        response.status == 200
       end
     end
   end
