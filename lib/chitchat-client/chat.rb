@@ -2,8 +2,6 @@ module Chitchat
   module Client
     class Chat
       attr_accessor :chat_id
-      attr_accessor :status
-      attr_accessor :messages
 
       class << self
         # GET /chats/:id
@@ -11,21 +9,35 @@ module Chitchat
           response = Chitchat::Client.connection.get("/chats/#{id}.json")
           return nil unless response.status == 200 && response.headers['content-type'] == "application/json" && response[:chat]
 
-          chat = response[:chat]
-          Chitchat::Client.new(chat[:chat_id], chat[:status], chat[:messages])
+          Chitchat::Client.new(id)
         end
 
         # POST /chats?from=[my_user_id]&to=[their_user_id]
         def create(from_user_id, to_user_id)
           response = Chitchat::Client.connection.post("/chats.json", {:from => from_user_id, :to => to_user_id})
+
+          chat = response[:chat]
+          Chitchat::Client.new(chat[:chat_id])
         end
       end
 
-      def initialize(chat_id, status, messages=[])
+      def initialize(chat_id)
         @chat_id = chat_id
-        @status = status
-        @messages = messages
         self
+      end
+
+      # GET /chats/:id
+      def status
+        response = Chitchat::Client.connection.get("/chats/#{chat_id}.json")
+        chat = response[:chat]
+        chat[:status]
+      end
+
+      # GET /chats/:id
+      def messages
+        response = Chitchat::Client.connection.get("/chats/#{chat_id}.json")
+        chat = response[:chat]
+        chat[:messages]
       end
 
       # PUT /chats/:id/answer
