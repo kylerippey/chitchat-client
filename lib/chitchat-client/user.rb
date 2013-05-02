@@ -7,13 +7,12 @@ module Chitchat
         def find(id)
           response = Chitchat::Client.connection.get("/users/#{id}.json")
           return nil unless response.status == 200 && response.headers['content-type'] == "application/json"
-          identifier = id
+          Chitchat::Client::User.new(id)
         end
       end
 
       def initialize(id)
-        identifier = id
-        sign_on
+        @identifier = id
         self
       end
 
