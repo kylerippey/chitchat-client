@@ -1,4 +1,7 @@
+require "faraday"
 require "chitchat-client/version"
+require "chitchat-client/chat"
+require "chitchat-client/user"
 
 module Chitchat
   module Client
