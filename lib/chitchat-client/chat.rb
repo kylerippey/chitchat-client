@@ -40,10 +40,6 @@ module Chitchat
       def send_message(from_id, body)
         response = Chitchat::Client.connection.post("/calls/#{chat_id}", {:from => from_id, :body => body})
       end
-
-      private
-
-      def 
     end
   end
 end
