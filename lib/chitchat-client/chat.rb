@@ -15,6 +15,7 @@ module Chitchat
         # POST /chats?from=[my_user_id]&to=[their_user_id]
         def create(from_user_id, to_user_id)
           response = Chitchat::Client.connection.post("/chats.json", {:from => from_user_id, :to => to_user_id})
+          return nil unless response.status == 200 && response.headers['content-type'] == "application/json" && response.body[:chat]
 
           chat = response.body[:chat]
           Chitchat::Client.new(chat[:chat_id])
