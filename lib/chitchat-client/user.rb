@@ -1,6 +1,6 @@
 module Chitchat
   module Client
-    
+
     # PUT /users/:id/sign_on
     def sign_on(id)
       self.connection.put("/users/#{id}/sign_on")
@@ -16,7 +16,9 @@ module Chitchat
       connection.get("/users/#{id}")
     end
 
-    def pending_chats
+    # GET /users/:id/chats?status=pending
+    def pending_chats(id)
+      connection.get("/users/#{id}/chats", {:status => 'pending'})
     end
   end
 end

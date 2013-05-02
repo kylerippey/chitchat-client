@@ -8,6 +8,12 @@ module Chitchat
     def hang_up
     end
 
-    # 
+    # POST /calls/:id/messages?from=[user_id]&body=[text]
+    def send_message(from_id, body)
+    end
+
+    # GET /chats/:id
+    def find_chat(id)
+    end
   end
 end
